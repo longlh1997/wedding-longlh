@@ -44,7 +44,11 @@ export const progress = (() => {
         }
 
         loaded += 1;
-        info.innerText = `Loading love ${skip ? 'skipped' : 'complete'} ${showInformation()}`;
+        if (loaded < total) {
+            info.innerText = `Đang kết nối hai trái tim... ${skip ? '❤️ Bỏ qua' : '' }`;
+        } else {
+            info.innerText = '💞 Hai trái tim đã hòa chung nhịp đập';
+        }
         bar.style.width = Math.min((loaded / total) * 100, 100).toString() + '%';
 
         if (loaded === total) {
