@@ -246,27 +246,77 @@ export const guest = (() => {
      * @returns {void}
      */
     const buildGoogleCalendar = () => {
-        /**
-         * @param {string} d 
-         * @returns {string}
-         */
-        const formatDate = (d) => (new Date(d.replace(' ', 'T') + ':00Z')).toISOString().replace(/[-:]/g, '').split('.').shift();
+        const formatDate = (d) => (new Date(d.replace(' ', 'T') + ':00+07:00')).toISOString().replace(/[-:]/g, '').split('.').shift();
 
-        const url = new URL('https://calendar.google.com/calendar/render');
-        const data = new URLSearchParams({
-            action: 'TEMPLATE',
-            text: 'Hôn lễ của Hải Long & Thanh Luyện',
-            // TODO:
-            dates: `${formatDate('2023-03-15 10:00')}/${formatDate('2023-03-15 11:00')}`,
-            details: '💍 Trân trọng kính mời Quý vị đến chung vui trong ngày trọng đại.\n' +
-              '✨ Xin chân thành cảm ơn sự quan tâm và lời chúc phúc của Quý vị — đó là niềm hạnh phúc và vinh dự lớn lao nhất.',
-            location: 'RT 10 RW 02, Desa Pajerukan, Kec. Kalibagor, Kab. Banyumas, Jawa Tengah 53191.',
-            ctz: config.get('tz'),
-        });
+        const event = {
+            title: 'Hôn lễ của Hải Long & Thanh Luyện',
+            start: '2025-11-30 12:00',
+            end: '2025-11-30 13:00',
+            details: '💍 Trân trọng kính mời Quý vị đến chung vui trong ngày trọng đại.\n✨ Xin chân thành cảm ơn sự quan tâm và lời chúc phúc của Quý vị — đó là niềm hạnh phúc và vinh dự lớn lao nhất.',
+            location: 'Văn Minh, Trung Nghĩa, Ý Yên, Nam Định, Vietnam',
+            tz: 'Asia/Ho_Chi_Minh', // múi giờ VN
+        };
 
-        url.search = data.toString();
-        document.querySelector('#home button')?.addEventListener('click', () => window.open(url, '_blank'));
+        const escapeICS = (text) => {
+            return text.replace(/\\|;|,|\n/g, (match) => {
+                if (match === '\n') {return '\\n';}
+                return '\\' + match;
+            });
+        };
+
+        const openGoogleCalendar = () => {
+            const url = new URL('https://calendar.google.com/calendar/render');
+            const data = new URLSearchParams({
+                action: 'TEMPLATE',
+                text: event.title,
+                dates: `${formatDate(event.start)}/${formatDate(event.end)}`,
+                details: event.details,
+                location: event.location,
+                ctz: event.tz,
+            });
+            url.search = data.toString();
+            window.open(url, '_blank');
+        };
+
+        const downloadICS = () => {
+            const formatDateICS = (d) => {
+                return new Date(d.replace(' ', 'T') + ':00+07:00').toISOString().replace(/[-:]/g, '').split('.')[0];
+            };
+
+            const icsContent = `BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Hải Long & Thanh Luyện//Wedding Calendar//VN
+CALSCALE:GREGORIAN
+BEGIN:VEVENT
+SUMMARY:${escapeICS(event.title)}
+DESCRIPTION:${escapeICS(event.details)}
+LOCATION:${escapeICS(event.location)}
+DTSTART;TZID=${event.tz}:${formatDateICS(event.start)}
+DTEND;TZID=${event.tz}:${formatDateICS(event.end)}
+END:VEVENT
+END:VCALENDAR`;
+
+            const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = 'hon_le_hai_long_thanh_luyen.ics';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        };
+
+        const handler = () => {
+            const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+            if (isMobile) {
+                downloadICS();
+            } else {
+                openGoogleCalendar();
+            }
+        };
+
+        document.querySelector('#home button')?.addEventListener('click', handler);
     };
+
 
     /**
      * @returns {object}
