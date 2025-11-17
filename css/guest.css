@@ -129,3 +129,13 @@ svg {
     position: relative;
     top: 1px
 }
+
+.mobile-break {
+    display: none;
+}
+
+@media (max-width: 576px) {
+    .mobile-break {
+        display: block;
+    }
+}
