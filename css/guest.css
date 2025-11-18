@@ -27,6 +27,14 @@ html {
     object-fit: cover;
 }
 
+.img-center-crop-contain {
+    width: 13rem;
+    height: 13rem;
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
 html[data-bs-theme="dark"] .btn-transparent {
     background-color: rgba(var(--bs-dark-rgb), 0.5) !important;
     backdrop-filter: blur(0.5rem);
