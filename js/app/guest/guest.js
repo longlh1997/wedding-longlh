@@ -33,7 +33,7 @@ export const guest = (() => {
         const count = (new Date(document.body.getAttribute('data-time').replace(' ', 'T'))).getTime();
 
         /**
-         * @param {number} num 
+         * @param {number} num
          * @returns {string}
          */
         const pad = (num) => num < 10 ? `0${num}` : `${num}`;
@@ -205,7 +205,7 @@ export const guest = (() => {
     };
 
     /**
-     * @param {HTMLDivElement} div 
+     * @param {HTMLDivElement} div
      * @returns {void}
      */
     const showStory = (div) => {
@@ -324,6 +324,20 @@ export const guest = (() => {
 
         // remove loading screen and show welcome screen.
         await util.changeOpacity(document.getElementById('loading'), false).then((el) => el.remove());
+        console.log("Done!!!")
+
+        const images = document.querySelectorAll("img[data-preUrl]");
+        images.forEach(img => {
+            const realSrc = img.dataset.preurl;
+
+            img.onload = () => {
+                img.classList.remove("lazy-blur");
+                img.classList.add("lazy-blur-loaded");
+            };
+
+            img.src = realSrc;
+            img.removeAttribute("data-preUrl");
+        })
     };
 
     /**
