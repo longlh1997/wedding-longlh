@@ -19,7 +19,7 @@ export const image = (() => {
     const urlCache = [];
 
     /**
-     * @param {string} src 
+     * @param {string} src
      * @returns {Promise<HTMLImageElement>}
      */
     const loadedImage = (src) => new Promise((res, rej) => {
@@ -30,8 +30,8 @@ export const image = (() => {
     });
 
     /**
-     * @param {HTMLImageElement} el 
-     * @param {string} src 
+     * @param {HTMLImageElement} el
+     * @param {string} src
      * @returns {Promise<void>}
      */
     const appendImage = (el, src) => loadedImage(src).then((img) => {
@@ -45,7 +45,7 @@ export const image = (() => {
     });
 
     /**
-     * @param {HTMLImageElement} el 
+     * @param {HTMLImageElement} el
      * @returns {void}
      */
     const getByFetch = (el) => {
@@ -60,7 +60,7 @@ export const image = (() => {
     };
 
     /**
-     * @param {HTMLImageElement} el 
+     * @param {HTMLImageElement} el
      * @returns {void}
      */
     const getByDefault = (el) => {
@@ -90,7 +90,7 @@ export const image = (() => {
         const imgs = Array.from(images);
 
         /**
-         * @param {function} filter 
+         * @param {function} filter
          * @returns {Promise<void>}
          */
         const runGroup = async (filter) => {
@@ -104,7 +104,7 @@ export const image = (() => {
     };
 
     /**
-     * @param {string} blobUrl 
+     * @param {string} blobUrl
      * @returns {void}
      */
     const download = (blobUrl) => {
@@ -117,7 +117,7 @@ export const image = (() => {
     const init = () => {
         c = cache('image').withForceCache();
         images = document.querySelectorAll('img');
-        images.forEach(progress.add);
+        [...images].filter(el => el.hasAttribute('data-src')).forEach(progress.add);
 
         return {
             load,
