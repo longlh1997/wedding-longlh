@@ -116,8 +116,8 @@ export const image = (() => {
      */
     const init = () => {
         c = cache('image').withForceCache();
-        images = document.querySelectorAll('img');
-        [...images].filter(el => el.hasAttribute('data-src')).forEach(progress.add);
+        images = document.querySelectorAll('img[data-src]');
+        images.forEach(progress.add);
 
         return {
             load,
