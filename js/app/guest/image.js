@@ -115,8 +115,14 @@ export const image = (() => {
      * @returns {object}
      */
     const init = () => {
+        const isMobile = window.innerWidth < 768;
         c = cache('image').withForceCache();
         images = document.querySelectorAll('img[data-src]');
+
+        if (isMobile) {
+            images = [...images].filter(img => img.getAttribute("data-pconly") !== "true");
+        }
+
         images.forEach(progress.add);
 
         return {
